@@ -6,111 +6,97 @@ Sistema de gestión de parking de bicicletas desarrollado con arquitectura MVC (
 
 ```
 ECPY_Proyecto_BikeParking_OO_GX/
+├── config.py               # Configuración (constantes simples)
 ├── pyproject.toml          # Configuración del proyecto Python
-├── config.yml              # Configuración de la aplicación
-├── requirements.txt        # Dependencias del proyecto
-├── .env                    # Variables de entorno (no versionado)
+├── requirements.txt        # Dependencias (solo pytest)
 ├── data/                   # Archivos de datos CSV
 │   ├── usuarios.csv
 │   ├── bicis.csv
 │   └── registros.csv
 ├── src/                    # Código fuente
-│   ├── config.py           # Carga centralizada de configuración
 │   ├── main.py             # Punto de entrada
-│   ├── modelo/             # Clases de dominio (Usuario, Bici, Registro)
-│   ├── vista/              # Interfaz de usuario (menús)
+│   ├── modelo/             # Clases de dominio
+│   │   ├── usuario.py      # Clase Usuario
+│   │   ├── bici.py         # Clase Bici
+│   │   └── registro.py     # Clase Registro
+│   ├── vista/              # Interfaz de usuario
+│   │   └── menu.py         # Funciones de menú por consola
 │   ├── controlador/        # Lógica de negocio
-│   └── datos/              # Gestión de persistencia CSV
+│   │   ├── parking_controller.py    # Clase fachada (opcional)
+│   │   ├── usuarios_controller.py   # Gestión de usuarios
+│   │   ├── bicis_controller.py      # Gestión de bicicletas
+│   │   └── movimientos_controller.py # Entradas/salidas
+│   ├── datos/              # Persistencia
+│   │   └── csv_manager.py  # Funciones de lectura/escritura CSV
+│   └── utils/              # Utilidades
+│       └── validaciones.py # Validación de DNI, email, etc.
 ├── tests/                  # Tests unitarios
 └── docs/                   # Documentación
 ```
 
-## ⚙️ Archivos de Configuración
+## 🏗️ Arquitectura
 
-Este proyecto utiliza varios archivos de configuración con propósitos diferentes:
+El proyecto sigue el patrón **MVC** (Modelo-Vista-Controlador):
 
-| Archivo            | Propósito                                                                                   |
-|--------------------|---------------------------------------------------------------------------------------------|
-| **pyproject.toml** | Configuración del **proyecto Python** (metadatos, dependencias, herramientas de desarrollo) |
-| **config.yml**     | Configuración de la **aplicación en ejecución** (rutas, formato CSV, validaciones)          |
-| **config.py**      | Módulo Python que **carga y unifica** la configuración de yml y .env                        |
-| **.env**           | Variables de entorno sensibles o específicas del entorno (no se versiona)                   |
+| Capa            | Carpeta            | Responsabilidad                                |
+|-----------------|--------------------|------------------------------------------------|
+| **Modelo**      | `src/modelo/`      | Clases de datos: `Usuario`, `Bici`, `Registro` |
+| **Vista**       | `src/vista/`       | Interacción con el usuario por consola         |
+| **Controlador** | `src/controlador/` | Lógica de negocio y reglas                     |
+| **Datos**       | `src/datos/`       | Persistencia en archivos CSV                   |
+| **Utils**       | `src/utils/`       | Funciones auxiliares (validaciones)            |
 
-### ¿Por qué tener pyproject.toml Y config.yml?
+### Estructura de datos CSV
 
-Ambos archivos cumplen **roles diferentes y complementarios**:
+```
+usuarios.csv:   dni, nombre, email
+bicis.csv:      serie_cuadro, dni_usuario, marca, modelo
+registros.csv:  timestamp, accion (IN/OUT), serie_cuadro, dni_usuario
+```
 
-| Aspecto              | pyproject.toml | config.yml |
-|----------------------|----------------------------------------------------------|--------------------------------------------|
-| **Propósito**        | Cómo **construir/desarrollar** el proyecto               | Cómo **se comporta** la aplicación         |
-| **Audiencia**        | Desarrolladores y herramientas (pip, pytest, black)      | La aplicación en ejecución                 |
-| **Estándar**         | PEP 518/621 (estándar Python) | Específico del proyecto  |
-| **Contenido típico** | Dependencias, metadatos, configuración de linters        | Rutas de datos, formato CSV, validaciones |
-| **Cuándo se usa**    | Al instalar, testear o construir el proyecto             | Al ejecutar la aplicación |
+## ⚙️ Configuración
 
-**En resumen:** `pyproject.toml` define el "cómo" del desarrollo, mientras que `config.yml` define el "qué" de la ejecución.
+### config.py
+
+Contiene las constantes de configuración. Es un archivo Python simple:
+
+```python
+import config
+
+# Constantes disponibles:
+config.APP_NAME          # "BikeParking"
+config.DATA_FOLDER       # "data"
+config.CSV_DELIMITER     # ","
+config.HEADERS_USUARIOS  # ["dni", "nombre", "email"]
+```
 
 ### pyproject.toml
 
 Estándar de Python (PEP 518/621) para definir:
 - Metadatos del proyecto (nombre, versión, autores)
 - Dependencias de producción y desarrollo
-- Configuración de herramientas (pytest, black, flake8)
-- Scripts de entrada (`bikeparking`)
+- Configuración de herramientas (pytest)
 
-```toml
-[project]
-name = "bikeparking"
-version = "1.0.0"
+## 📚 Archivos de Configuración en Python
 
-[tool.pytest]
-testpaths = ["tests"]
-```
+En proyectos Python es común encontrar varios archivos de configuración. Aquí explicamos cada uno:
 
-### config.yml
+| Archivo            | ¿Qué es?                         | ¿Cuándo usarlo?                               |
+|--------------------|----------------------------------|-----------------------------------------------|
+| **pyproject.toml** | Estándar del proyecto Python     | Metadatos, dependencias, herramientas (pytest)|
+| **config.py**      | Constantes de la aplicación      | Rutas, valores por defecto, cabeceras CSV     |
+| **config.yml**     | Configuración en formato YAML    | Valores que el usuario puede modificar        |
+| **.env**           | Variables de entorno             | Secretos, contraseñas, configuración local    |
 
-Configuración específica de la aplicación:
-- Rutas de carpetas de datos
-- Nombres de archivos CSV
-- Formato CSV (delimitador, encoding)
-- Cabeceras de los archivos
-- Parámetros de validación
+### ¿Por qué existen tantos archivos?
 
-```yaml
-data:
-  folder: "data"
-  usuarios_file: "usuarios.csv"
-
-csv:
-  delimiter: ";"
-  encoding: "utf-8"
-```
-
-### config.py
-
-Módulo Python que:
-1. Detecta automáticamente la raíz del proyecto buscando `pyproject.toml`
-2. Carga `config.yml` y `.env`
-3. Permite sobrescribir valores de yml con variables de entorno
-4. Expone una instancia global `config` para usar en toda la aplicación
-
-```python
-from config import config
-
-print(config.APP_NAME)      # "BikeParking"
-print(config.DATA_FOLDER)   # "data"
-print(config.CSV_DELIMITER) # ";"
-```
-
-**Prioridad de configuración:** `.env` > `config.yml` > valores por defecto
-
-### 🔄 Resumen Visual
+Cada archivo tiene un **propósito diferente**:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                        DESARROLLO                               │
 │  ┌─────────────────┐                                            │
-│  │ pyproject.toml  │ → pip, pytest, black, ruff, mypy           │
+│  │ pyproject.toml  │ → pip, pytest, versión, dependencias       │
 │  └─────────────────┘                                            │
 └─────────────────────────────────────────────────────────────────┘
 
@@ -118,23 +104,111 @@ print(config.CSV_DELIMITER) # ";"
 │                        EJECUCIÓN                                │
 │  ┌──────────┐    ┌─────────────┐    ┌───────────┐               │
 │  │   .env   │ →  │  config.py  │ ←  │config.yml │               │
-│  │(secretos)│    │  (cargador) │    │ (defaults)│               │
+│  │(secretos)│    │  (cargador) │    │ (valores) │               │
 │  └──────────┘    └─────────────┘    └───────────┘               │
-│                         ↓                                       │
-│                  config.APP_NAME                                │
-│                  config.CSV_DELIMITER                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 🎯 ¿Cuándo usar cada uno?
+### Detalle de cada archivo
 
-| Necesito... | Usar |
-|-------------|------|
-| Guardar un secreto o contraseña | `.env` |
-| Cambiar un valor por defecto de la app | `config.yml` |
-| Añadir lógica de carga de configuración | `config.py` |
-| Añadir una dependencia o configurar pytest | `pyproject.toml` |
-| Sobrescribir config.yml en producción | `.env` |
+#### pyproject.toml
+- **Audiencia**: Desarrolladores y herramientas (pip, pytest)
+- **Estándar**: PEP 518/621 (oficial de Python)
+- **Contenido**: Dependencias, versión, configuración de linters
+- **Cuándo se lee**: Al instalar (`pip install`) o testear (`pytest`)
+
+```toml
+[project]
+name = "bikeparking"
+version = "1.0.0"
+dependencies = ["pytest>=7.0"]
+```
+
+#### config.py
+- **Audiencia**: La aplicación en ejecución
+- **Formato**: Código Python (constantes simples)
+- **Contenido**: Rutas, delimitadores CSV, cabeceras
+- **Cuándo se lee**: Al ejecutar la aplicación
+
+```python
+DATA_FOLDER = "data"
+CSV_DELIMITER = ","
+HEADERS_USUARIOS = ["dni", "nombre", "email"]
+```
+
+#### config.yml (no usado en este proyecto)
+- **Audiencia**: Usuarios/administradores
+- **Formato**: YAML (legible por humanos)
+- **Contenido**: Valores configurables sin tocar código
+- **Requiere**: Librería `pyyaml`
+
+```yaml
+data:
+  folder: "data"
+csv:
+  delimiter: ","
+```
+
+#### .env (no usado en este proyecto)
+- **Audiencia**: Configuración local/secretos
+- **Formato**: Clave=valor
+- **Contenido**: Contraseñas, API keys, variables por entorno
+- **Requiere**: Librería `python-dotenv`
+- **⚠️ No se versiona** (añadir a .gitignore)
+
+```env
+DATABASE_URL=postgresql://user:pass@localhost/db
+API_KEY=sk-1234567890
+DEBUG=true
+```
+
+### ¿Por qué este proyecto solo usa config.py?
+
+Para **simplicidad pedagógica**:
+
+| Enfoque | Archivos | Librerías extra |
+|---------|----------|-----------------|
+| **Complejo** | pyproject.toml + config.yml + .env + config.py | pyyaml, python-dotenv |
+| **Simple** (este proyecto) | pyproject.toml + config.py | ninguna |
+
+En proyectos profesionales es común usar los 4 archivos, pero para aprender POO es mejor empezar simple.
+
+### 📂 Archivos de ejemplo incluidos
+
+Para aprender cómo funcionan estos archivos, el proyecto incluye **ejemplos educativos**:
+
+| Archivo | Descripción |
+|---------|-------------|
+| `config.yml.example` | Ejemplo de configuración YAML con comentarios explicativos |
+| `.env.example` | Ejemplo de variables de entorno con explicación de uso |
+
+Estos archivos **no se usan** en la aplicación, pero puedes estudiarlos para entender cómo funcionan en proyectos profesionales.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🚀 Instalación
 
@@ -174,20 +248,35 @@ source bikeParkingPooVenv/bin/activate
 pip install -r requirements.txt
 ```
 
-O para desarrollo:
-```bash
-pip install -e ".[dev]"
-```
-
 ## 🎮 Uso
 
 ```bash
 python -m src.main
 ```
 
-O si instalaste el proyecto:
-```bash
-bikeparking
+### Ejemplo de uso directo (sin clase)
+
+```python
+# Usar las funciones directamente
+from src.controlador import usuarios_controller
+from src.controlador import bicis_controller
+from src.utils import validar_dni
+
+# Validar un DNI
+if validar_dni("12345678Z"):
+    usuarios_controller.registrar_usuario("12345678Z", "Juan", "juan@email.com")
+```
+
+### Ejemplo con clase fachada
+
+```python
+# Usar la clase ParkingController
+from src.controlador import ParkingController
+
+parking = ParkingController()
+parking.registrar_usuario("12345678Z", "Juan", "juan@email.com")
+parking.registrar_bici("BK001", "12345678Z", "Giant", "Escape")
+parking.registrar_entrada("BK001")
 ```
 
 ## 🧪 Tests
@@ -196,9 +285,9 @@ bikeparking
 pytest
 ```
 
-Con cobertura:
+Con detalle:
 ```bash
-pytest --cov=src
+pytest -v
 ```
 
 ## 📝 Licencia
