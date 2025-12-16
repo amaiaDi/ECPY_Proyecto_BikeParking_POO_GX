@@ -114,6 +114,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+bikeParkingPooVenv/
 
 # Spyder project settings
 .spyderproject

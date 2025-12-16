@@ -22,33 +22,30 @@ from dotenv import load_dotenv
 # =============================================================================
 # RUTA BASE DEL PROYECTO
 # =============================================================================
-# Se calcula automáticamente desde la ubicación de este archivo.
-# config.py está en src/, por lo que parent.parent nos da la raíz del proyecto.
-#
-# Estructura:
-#   ECPY_Proyecto_BikeParking_GX/     <- BASE_DIR (raíz del proyecto)
-#   ├── config.yml
-#   ├── .env
-#   ├── src/                          <- parent (carpeta src)
-#   │   ├── config.py                 <- __file__ (este archivo)
-#   │   ├── modelo/
-#   │   ├── vista/
-#   │   └── controlador/
-#   └── data/
-#
-# Si necesitas sobrescribir la ruta, usa la variable de entorno BASE_DIR en .env
+# Se calcula automáticamente buscando config.yml hacia arriba en el árbol.
+# Esto hace que funcione independientemente de dónde esté ubicado config.py.
 # =============================================================================
 
-# Primero cargamos .env para poder leer BASE_DIR si está definido
-_env_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(_env_path)
+def _encontrar_raiz_proyecto():
+    """
+    Busca la raíz del proyecto subiendo hasta encontrar config.yml.
+    
+    Returns:
+        Path a la raíz del proyecto.
+    """
+    ruta = Path(__file__).resolve().parent
+    while ruta != ruta.parent:
+        if (ruta / "config.yml").exists():
+            return ruta
+        ruta = ruta.parent
+    # Fallback si no encuentra config.yml
+    return Path(__file__).resolve().parent.parent
 
-# BASE_DIR: usa la variable de entorno si existe, sino calcula automáticamente
-_base_dir_env = os.getenv('BASE_DIR')
-if _base_dir_env:
-    BASE_DIR = Path(_base_dir_env)
-else:
-    BASE_DIR = Path(__file__).resolve().parent.parent
+
+BASE_DIR = _encontrar_raiz_proyecto()
+
+# Cargamos .env desde la raíz del proyecto
+load_dotenv(BASE_DIR / ".env")
 
 
 def cargar_yaml():
