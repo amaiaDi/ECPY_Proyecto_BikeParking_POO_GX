@@ -9,7 +9,7 @@ import csv
 import os
 
 from src.modelo import Usuario, Bici, Registro
-from src.config import config
+from config import config
 
 
 class CsvManager:

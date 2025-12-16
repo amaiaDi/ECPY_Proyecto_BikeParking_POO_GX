@@ -6,7 +6,7 @@ Lee la configuración desde:
 2. .env - Variables de entorno (sobrescribe config.yml).
 
 Uso:
-    from src.config import config
+    from config import config
     
     print(config.APP_NAME)
     print(config.DATA_FOLDER)
@@ -22,27 +22,10 @@ from dotenv import load_dotenv
 # =============================================================================
 # RUTA BASE DEL PROYECTO
 # =============================================================================
-# Se calcula automáticamente buscando config.yml hacia arriba en el árbol.
-# Esto hace que funcione independientemente de dónde esté ubicado config.py.
+# Al estar config.py en la raíz, BASE_DIR es simplemente su directorio padre.
 # =============================================================================
 
-def _encontrar_raiz_proyecto():
-    """
-    Busca la raíz del proyecto subiendo hasta encontrar config.yml.
-    
-    Returns:
-        Path a la raíz del proyecto.
-    """
-    ruta = Path(__file__).resolve().parent
-    while ruta != ruta.parent:
-        if (ruta / "config.yml").exists():
-            return ruta
-        ruta = ruta.parent
-    # Fallback si no encuentra config.yml
-    return Path(__file__).resolve().parent.parent
-
-
-BASE_DIR = _encontrar_raiz_proyecto()
+BASE_DIR = Path(__file__).resolve().parent
 
 # Cargamos .env desde la raíz del proyecto
 load_dotenv(BASE_DIR / ".env")

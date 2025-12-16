@@ -95,7 +95,7 @@ Módulo Python que:
 4. Expone una instancia global `config` para usar en toda la aplicación
 
 ```python
-from src.config import config
+from config import config
 
 print(config.APP_NAME)      # "BikeParking"
 print(config.DATA_FOLDER)   # "data"

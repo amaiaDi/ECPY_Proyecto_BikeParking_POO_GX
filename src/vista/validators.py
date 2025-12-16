@@ -6,7 +6,7 @@ antes de pasarlos al controlador.
 """
 
 import re
-from src.config import config
+from config import config
 
 
 def validar_dni(dni):
