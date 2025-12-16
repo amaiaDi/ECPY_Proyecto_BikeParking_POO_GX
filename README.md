@@ -44,7 +44,33 @@ El proyecto sigue el patrón **MVC** (Modelo-Vista-Controlador):
 | **Vista**       | `src/vista/`       | Interacción con el usuario por consola         |
 | **Controlador** | `src/controlador/` | Lógica de negocio y reglas                     |
 | **Datos**       | `src/datos/`       | Persistencia en archivos CSV                   |
-| **Utils**       | `src/utils/`       | Funciones auxiliares (validaciones)            |
+
+### Capas adicionales
+
+| Capa             | Carpeta               | Responsabilidad principal                                                      |
+|------------------|----------------------|--------------------------------------------------------------------------------|
+| **Services**     | `src/services/`      | Casos de uso y lógica de negocio orquestada (ej: registrar usuario, bici, etc) |
+| **Repositories** | `src/repositories/`  | Acceso a datos (leer, guardar, buscar en CSV o BD)                             |
+| **Validators**   | `src/validators/`    | Validaciones de formato y reglas de negocio (DNI, email, unicidad, etc)        |
+
+Estas capas permiten separar responsabilidades, facilitar el testeo y preparar el proyecto para crecer o cambiar de tecnología de persistencia.
+
+
+## 🧩 Capas adicionales: Repositories, Services y Validators
+
+El proyecto incorpora una arquitectura moderna y flexible, añadiendo tres capas clave:
+
+- **Repositories (`src/repositories/`)**: Encapsulan el acceso a los datos (CSV hoy, base de datos mañana). Ejemplo: `usuarios_repository.py`, `bicis_repository.py`, `registros_repository.py`.
+- **Services (`src/services/`)**: Orquestan la lógica de negocio y los casos de uso principales. Ejemplo: `bikeparking_service.py` es el punto de entrada para registrar usuarios, bicis, movimientos, etc.
+- **Validators (`src/validators/`)**: Separan las validaciones puras de formato (`formato.py`: DNI, email, campos vacíos) de las reglas de negocio que dependen de los datos (`negocio.py`: unicidad, existencia, coherencia IN/OUT).
+
+Esta organización permite:
+- Separar responsabilidades y facilitar el mantenimiento.
+- Cambiar la tecnología de persistencia sin tocar la lógica de negocio.
+- Testear los servicios y validadores de forma aislada.
+- Preparar el proyecto para crecer (por ejemplo, añadir una API web o cambiar a base de datos relacional).
+
+Consulta los archivos en cada carpeta para ver ejemplos y patrones recomendados.
 
 ### Estructura de datos CSV
 
@@ -281,6 +307,8 @@ Con detalle:
 ```bash
 pytest -v
 ```
+
+-
 
 ## 📝 Licencia
 

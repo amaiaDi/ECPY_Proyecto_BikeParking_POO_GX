@@ -10,4 +10,4 @@ Módulos:
 """
 
 from src.controlador.parking_controller import ParkingController
-from src.utils.validaciones import validar_dni, validar_email
+from src.validators.formato import validar_dni, validar_email

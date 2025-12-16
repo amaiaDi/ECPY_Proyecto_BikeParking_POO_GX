@@ -6,7 +6,7 @@ Funciones para registrar y consultar usuarios.
 
 from src.modelo import Usuario
 from src.datos import csv_manager
-from src.utils.validaciones import validar_dni, validar_email
+from src.validators.formato import validar_dni, validar_email
 
 
 def registrar_usuario(dni, nombre, email):

@@ -15,7 +15,7 @@ import pytest
 
 import config
 from src.controlador import ParkingController
-from src.utils import validar_dni, validar_email
+from src.validators.formato import validar_dni, validar_email
 
 
 class TestValidaciones:

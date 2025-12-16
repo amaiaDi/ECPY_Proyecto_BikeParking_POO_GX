@@ -5,7 +5,7 @@ Clase que agrupa todas las operaciones del parking.
 Internamente delega a los módulos especializados.
 """
 
-from src.utils.validaciones import validar_dni, validar_email
+from src.validators.formato import validar_dni, validar_email
 from src.controlador import usuarios_controller
 from src.controlador import bicis_controller
 from src.controlador import movimientos_controller
