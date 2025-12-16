@@ -2,6 +2,11 @@
 test_controlador.py - Tests para el controlador.
 
 Ejecutar con: pytest tests/test_controlador.py -v
+
+Estructura de datos simplificada:
+- Usuario: dni, nombre, email
+- Bici: serie_cuadro, dni_usuario, marca, modelo
+- Registro: timestamp, accion (IN/OUT), serie_cuadro, dni_usuario
 """
 
 import os
@@ -67,7 +72,7 @@ class TestRegistroUsuarios:
     def test_registrar_usuario_ok(self):
         """Se puede registrar un usuario con datos válidos."""
         resultado = self.controlador.registrar_usuario(
-            "12345678Z", "Juan", "García", "juan@email.com", "666111222", "1234"
+            "12345678Z", "Juan García", "juan@email.com"
         )
         
         assert "OK" in resultado
@@ -76,11 +81,11 @@ class TestRegistroUsuarios:
     def test_registrar_usuario_dni_duplicado(self):
         """No se puede registrar un usuario con DNI duplicado."""
         self.controlador.registrar_usuario(
-            "12345678Z", "Juan", "García", "juan@email.com", "666111222", "1234"
+            "12345678Z", "Juan García", "juan@email.com"
         )
         
         resultado = self.controlador.registrar_usuario(
-            "12345678Z", "Pedro", "López", "pedro@email.com", "666333444", "5678"
+            "12345678Z", "Pedro López", "pedro@email.com"
         )
         
         assert "ERROR" in resultado
@@ -89,7 +94,7 @@ class TestRegistroUsuarios:
     def test_registrar_usuario_dni_invalido(self):
         """No se puede registrar un usuario con DNI inválido."""
         resultado = self.controlador.registrar_usuario(
-            "12345678A", "Juan", "García", "juan@email.com", "666111222", "1234"
+            "12345678A", "Juan García", "juan@email.com"
         )
         
         assert "ERROR" in resultado
@@ -110,7 +115,7 @@ class TestRegistroBicis:
         
         # Registrar un usuario para las pruebas
         self.controlador.registrar_usuario(
-            "12345678Z", "Juan", "García", "juan@email.com", "666111222", "1234"
+            "12345678Z", "Juan García", "juan@email.com"
         )
     
     def teardown_method(self):
@@ -121,7 +126,7 @@ class TestRegistroBicis:
     def test_registrar_bici_ok(self):
         """Se puede registrar una bici con propietario existente."""
         resultado = self.controlador.registrar_bici(
-            "BICI001", "Giant", "Escape 3", "12345678Z"
+            "BICI001", "12345678Z", "Giant", "Escape 3"
         )
         
         assert "OK" in resultado
@@ -129,7 +134,7 @@ class TestRegistroBicis:
     def test_registrar_bici_propietario_no_existe(self):
         """No se puede registrar bici si el propietario no existe."""
         resultado = self.controlador.registrar_bici(
-            "BICI001", "Giant", "Escape 3", "99999999R"
+            "BICI001", "99999999R", "Giant", "Escape 3"
         )
         
         assert "ERROR" in resultado
@@ -151,9 +156,9 @@ class TestMovimientos:
         
         # Registrar usuario y bici para las pruebas
         self.controlador.registrar_usuario(
-            "12345678Z", "Juan", "García", "juan@email.com", "666111222", "1234"
+            "12345678Z", "Juan García", "juan@email.com"
         )
-        self.controlador.registrar_bici("BICI001", "Giant", "Escape 3", "12345678Z")
+        self.controlador.registrar_bici("BICI001", "12345678Z", "Giant", "Escape 3")
     
     def teardown_method(self):
         """Limpia datos temporales después de cada test."""

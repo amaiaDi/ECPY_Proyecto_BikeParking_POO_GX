@@ -5,7 +5,6 @@ Contiene la lógica de negocio que conecta el modelo con la vista.
 """
 
 import re
-import uuid
 from datetime import datetime
 
 from src.modelo import Usuario, Bici, Registro
@@ -74,24 +73,21 @@ class ParkingController:
     # GESTIÓN DE USUARIOS
     # =========================================================================
     
-    def registrar_usuario(self, dni, nombre, apellidos, email, movil, password):
+    def registrar_usuario(self, dni, nombre, email):
         """
         Registra un nuevo usuario en el sistema.
         
         Args:
             dni: DNI del usuario.
-            nombre: Nombre del usuario.
-            apellidos: Apellidos del usuario.
+            nombre: Nombre completo del usuario.
             email: Correo electrónico.
-            movil: Teléfono móvil.
-            password: Contraseña.
             
         Returns:
             Mensaje indicando el resultado de la operación.
         """
         # Validar campos obligatorios
-        if not dni or not nombre or not password:
-            return "ERROR: DNI, nombre y contraseña son obligatorios."
+        if not dni or not nombre:
+            return "ERROR: DNI y nombre son obligatorios."
         
         # Validar formato DNI
         if not self.validar_dni(dni):
@@ -114,10 +110,10 @@ class ParkingController:
                     return "ERROR: Ya existe un usuario con ese email."
         
         # Crear y guardar usuario
-        usuario = Usuario(dni, nombre, apellidos, email, movil, password)
+        usuario = Usuario(dni, nombre, email)
         self.csv_manager.guardar_usuario(usuario)
         
-        return f"OK: Usuario {nombre} {apellidos} registrado correctamente."
+        return f"OK: Usuario {nombre} registrado correctamente."
     
     def obtener_usuarios(self):
         """
@@ -132,28 +128,28 @@ class ParkingController:
     # GESTIÓN DE BICICLETAS
     # =========================================================================
     
-    def registrar_bici(self, id_bici, marca, modelo, dni_propietario):
+    def registrar_bici(self, serie_cuadro, dni_usuario, marca, modelo):
         """
         Registra una nueva bicicleta en el sistema.
         
         Args:
-            id_bici: Identificador/número de serie.
+            serie_cuadro: Número de serie del cuadro.
+            dni_usuario: DNI del propietario.
             marca: Marca de la bicicleta.
             modelo: Modelo de la bicicleta.
-            dni_propietario: DNI del propietario.
             
         Returns:
             Mensaje indicando el resultado de la operación.
         """
         # Validar campos obligatorios
-        if not id_bici or not marca or not dni_propietario:
-            return "ERROR: ID, marca y DNI del propietario son obligatorios."
+        if not serie_cuadro or not marca or not dni_usuario:
+            return "ERROR: Serie, marca y DNI del propietario son obligatorios."
         
         # Validar que el propietario exista
         usuarios = self.csv_manager.leer_usuarios()
         propietario_existe = False
         for u in usuarios:
-            if u.dni == dni_propietario:
+            if u.dni == dni_usuario:
                 propietario_existe = True
                 break
         
@@ -163,11 +159,11 @@ class ParkingController:
         # Validar que el ID de bici no esté registrado
         bicis = self.csv_manager.leer_bicis()
         for b in bicis:
-            if b.id == id_bici:
-                return "ERROR: Ya existe una bicicleta con ese ID."
+            if b.serie_cuadro == serie_cuadro:
+                return "ERROR: Ya existe una bicicleta con ese número de serie."
         
         # Crear y guardar bici
-        bici = Bici(id_bici, marca, modelo, dni_propietario)
+        bici = Bici(serie_cuadro, dni_usuario, marca, modelo)
         self.csv_manager.guardar_bici(bici)
         
         return f"OK: Bicicleta {marca} {modelo} registrada correctamente."
@@ -185,77 +181,75 @@ class ParkingController:
     # GESTIÓN DE MOVIMIENTOS (ENTRADAS/SALIDAS)
     # =========================================================================
     
-    def registrar_entrada(self, id_bici):
+    def registrar_entrada(self, serie_cuadro):
         """
         Registra la entrada de una bicicleta al parking.
         
         Args:
-            id_bici: ID de la bicicleta.
+            serie_cuadro: Número de serie del cuadro de la bicicleta.
             
         Returns:
             Mensaje indicando el resultado de la operación.
         """
-        if not id_bici:
-            return "ERROR: El ID de la bicicleta es obligatorio."
+        if not serie_cuadro:
+            return "ERROR: El número de serie de la bicicleta es obligatorio."
         
-        # Verificar que la bici existe
+        # Verificar que la bici existe y obtener dni_usuario
         bicis = self.csv_manager.leer_bicis()
-        bici_existe = False
+        bici_encontrada = None
         for b in bicis:
-            if b.id == id_bici:
-                bici_existe = True
+            if b.serie_cuadro == serie_cuadro:
+                bici_encontrada = b
                 break
         
-        if not bici_existe:
+        if not bici_encontrada:
             return "ERROR: La bicicleta no está registrada."
         
         # Verificar que la bici no está ya en el parking
-        if self._bici_en_parking(id_bici):
+        if self._bici_en_parking(serie_cuadro):
             return "ERROR: La bicicleta ya está en el parking."
         
         # Crear y guardar registro de entrada
-        id_registro = str(uuid.uuid4())[:8]
-        fecha_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        registro = Registro(id_registro, id_bici, "entrada", fecha_hora)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        registro = Registro(timestamp, "IN", serie_cuadro, bici_encontrada.dni_usuario)
         self.csv_manager.guardar_registro(registro)
         
-        return f"OK: Entrada registrada para bici {id_bici}."
+        return f"OK: Entrada registrada para bici {serie_cuadro}."
     
-    def registrar_salida(self, id_bici):
+    def registrar_salida(self, serie_cuadro):
         """
         Registra la salida de una bicicleta del parking.
         
         Args:
-            id_bici: ID de la bicicleta.
+            serie_cuadro: Número de serie del cuadro de la bicicleta.
             
         Returns:
             Mensaje indicando el resultado de la operación.
         """
-        if not id_bici:
-            return "ERROR: El ID de la bicicleta es obligatorio."
+        if not serie_cuadro:
+            return "ERROR: El número de serie de la bicicleta es obligatorio."
         
-        # Verificar que la bici existe
+        # Verificar que la bici existe y obtener dni_usuario
         bicis = self.csv_manager.leer_bicis()
-        bici_existe = False
+        bici_encontrada = None
         for b in bicis:
-            if b.id == id_bici:
-                bici_existe = True
+            if b.serie_cuadro == serie_cuadro:
+                bici_encontrada = b
                 break
         
-        if not bici_existe:
+        if not bici_encontrada:
             return "ERROR: La bicicleta no está registrada."
         
         # Verificar que la bici está en el parking
-        if not self._bici_en_parking(id_bici):
+        if not self._bici_en_parking(serie_cuadro):
             return "ERROR: La bicicleta no está en el parking."
         
         # Crear y guardar registro de salida
-        id_registro = str(uuid.uuid4())[:8]
-        fecha_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        registro = Registro(id_registro, id_bici, "salida", fecha_hora)
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        registro = Registro(timestamp, "OUT", serie_cuadro, bici_encontrada.dni_usuario)
         self.csv_manager.guardar_registro(registro)
         
-        return f"OK: Salida registrada para bici {id_bici}."
+        return f"OK: Salida registrada para bici {serie_cuadro}."
     
     def obtener_registros(self):
         """
@@ -277,19 +271,19 @@ class ParkingController:
         bicis_en_parking = []
         
         for bici in bicis:
-            if self._bici_en_parking(bici.id):
+            if self._bici_en_parking(bici.serie_cuadro):
                 bicis_en_parking.append(bici)
         
         return bicis_en_parking
     
-    def _bici_en_parking(self, id_bici):
+    def _bici_en_parking(self, serie_cuadro):
         """
         Verifica si una bicicleta está actualmente en el parking.
         
         Una bici está en el parking si su último movimiento fue una entrada.
         
         Args:
-            id_bici: ID de la bicicleta.
+            serie_cuadro: Número de serie del cuadro de la bicicleta.
             
         Returns:
             True si la bici está en el parking, False en caso contrario.
@@ -299,7 +293,7 @@ class ParkingController:
         # Buscar el último registro de esta bici
         ultimo_registro = None
         for r in registros:
-            if r.id_bici == id_bici:
+            if r.serie_cuadro == serie_cuadro:
                 ultimo_registro = r
         
         # Si no hay registros, no está en el parking

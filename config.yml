@@ -28,7 +28,7 @@ data:
 
 # Configuración de formato CSV
 csv:
-  delimiter: ";"
+  delimiter: ","
   encoding: "utf-8"
   
 # Cabeceras de los archivos CSV
@@ -36,20 +36,17 @@ csv_headers:
   usuarios:
     - "dni"
     - "nombre"
-    - "apellidos"
     - "email"
-    - "movil"
-    - "password"
   bicis:
-    - "id"
+    - "serie_cuadro"
+    - "dni_usuario"
     - "marca"
     - "modelo"
-    - "dni_propietario"
   registros:
-    - "id"
-    - "id_bici"
-    - "tipo"
-    - "fecha_hora"
+    - "timestamp"
+    - "accion"
+    - "serie_cuadro"
+    - "dni_usuario"
 
 # Validaciones
 validations:

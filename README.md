@@ -104,6 +104,38 @@ print(config.CSV_DELIMITER) # ";"
 
 **Prioridad de configuración:** `.env` > `config.yml` > valores por defecto
 
+### 🔄 Resumen Visual
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        DESARROLLO                               │
+│  ┌─────────────────┐                                            │
+│  │ pyproject.toml  │ → pip, pytest, black, ruff, mypy           │
+│  └─────────────────┘                                            │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        EJECUCIÓN                                │
+│  ┌──────────┐    ┌─────────────┐    ┌───────────┐               │
+│  │   .env   │ →  │  config.py  │ ←  │config.yml │               │
+│  │(secretos)│    │  (cargador) │    │ (defaults)│               │
+│  └──────────┘    └─────────────┘    └───────────┘               │
+│                         ↓                                       │
+│                  config.APP_NAME                                │
+│                  config.CSV_DELIMITER                           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 🎯 ¿Cuándo usar cada uno?
+
+| Necesito... | Usar |
+|-------------|------|
+| Guardar un secreto o contraseña | `.env` |
+| Cambiar un valor por defecto de la app | `config.yml` |
+| Añadir lógica de carga de configuración | `config.py` |
+| Añadir una dependencia o configurar pytest | `pyproject.toml` |
+| Sobrescribir config.yml en producción | `.env` |
+
 ## 🚀 Instalación
 
 ### 1. Clonar el repositorio

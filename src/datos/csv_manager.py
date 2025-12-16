@@ -90,10 +90,7 @@ class CsvManager:
                 usuario = Usuario(
                     dni=fila['dni'],
                     nombre=fila['nombre'],
-                    apellidos=fila['apellidos'],
-                    email=fila['email'],
-                    movil=fila['movil'],
-                    password=fila['password']
+                    email=fila['email']
                 )
                 usuarios.append(usuario)
         
@@ -111,10 +108,7 @@ class CsvManager:
             writer.writerow([
                 usuario.dni,
                 usuario.nombre,
-                usuario.apellidos,
-                usuario.email,
-                usuario.movil,
-                usuario.password
+                usuario.email
             ])
     
     # =========================================================================
@@ -134,10 +128,10 @@ class CsvManager:
             reader = csv.DictReader(archivo, delimiter=self.delimiter)
             for fila in reader:
                 bici = Bici(
-                    id=fila['id'],
+                    serie_cuadro=fila['serie_cuadro'],
+                    dni_usuario=fila['dni_usuario'],
                     marca=fila['marca'],
-                    modelo=fila['modelo'],
-                    dni_propietario=fila['dni_propietario']
+                    modelo=fila['modelo']
                 )
                 bicis.append(bici)
         
@@ -153,10 +147,10 @@ class CsvManager:
         with open(self.ruta_bicis, mode='a', encoding=self.encoding, newline='') as archivo:
             writer = csv.writer(archivo, delimiter=self.delimiter)
             writer.writerow([
-                bici.id,
+                bici.serie_cuadro,
+                bici.dni_usuario,
                 bici.marca,
-                bici.modelo,
-                bici.dni_propietario
+                bici.modelo
             ])
     
     # =========================================================================
@@ -176,10 +170,10 @@ class CsvManager:
             reader = csv.DictReader(archivo, delimiter=self.delimiter)
             for fila in reader:
                 registro = Registro(
-                    id=fila['id'],
-                    id_bici=fila['id_bici'],
-                    tipo=fila['tipo'],
-                    fecha_hora=fila['fecha_hora']
+                    timestamp=fila['timestamp'],
+                    accion=fila['accion'],
+                    serie_cuadro=fila['serie_cuadro'],
+                    dni_usuario=fila['dni_usuario']
                 )
                 registros.append(registro)
         
@@ -195,8 +189,8 @@ class CsvManager:
         with open(self.ruta_registros, mode='a', encoding=self.encoding, newline='') as archivo:
             writer = csv.writer(archivo, delimiter=self.delimiter)
             writer.writerow([
-                registro.id,
-                registro.id_bici,
-                registro.tipo,
-                registro.fecha_hora
+                registro.timestamp,
+                registro.accion,
+                registro.serie_cuadro,
+                registro.dni_usuario
             ])
