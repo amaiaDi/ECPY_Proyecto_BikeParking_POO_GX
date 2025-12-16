@@ -1,0 +1,58 @@
+# =============================================================================
+# Configuración de BikeParking
+# =============================================================================
+
+# Información de la aplicación
+app:
+  name: "BikeParking"
+  version: "1.0.0"
+  description: "Sistema de gestión de parking de bicicletas"
+
+# Rutas del proyecto
+paths:
+  source: "src"
+  tests: "tests"
+  docs: "docs"
+
+# Configuración del entorno
+environment:
+  debug: true
+  log_level: "INFO"
+
+# Configuración de archivos de datos
+data:
+  folder: "data"
+  usuarios_file: "usuarios.csv"
+  bicis_file: "bicis.csv"
+  registros_file: "registros.csv"
+
+# Configuración de formato CSV
+csv:
+  delimiter: ";"
+  encoding: "utf-8"
+  
+# Cabeceras de los archivos CSV
+csv_headers:
+  usuarios:
+    - "dni"
+    - "nombre"
+    - "apellidos"
+    - "email"
+    - "movil"
+    - "password"
+  bicis:
+    - "id"
+    - "marca"
+    - "modelo"
+    - "dni_propietario"
+  registros:
+    - "id"
+    - "id_bici"
+    - "tipo"
+    - "fecha_hora"
+
+# Validaciones
+validations:
+  dni_length: 9
+  min_password_length: 4
+  movil_length: 9
