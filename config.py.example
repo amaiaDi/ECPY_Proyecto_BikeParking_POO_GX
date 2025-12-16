@@ -1,0 +1,199 @@
+"""
+config.py.example - Ejemplo de configuración avanzada con YAML y .env
+
+=============================================================================
+ESTE ARCHIVO ES UN EJEMPLO EDUCATIVO
+=============================================================================
+
+Este archivo muestra cómo sería config.py si quisiéramos usar:
+- config.yml para valores configurables
+- .env para secretos y variables de entorno
+
+Para usarlo:
+1. Renombrar a config.py (reemplazando el actual)
+2. Renombrar config.yml.example a config.yml
+3. Renombrar .env.example a .env
+4. Instalar dependencias: pip install pyyaml python-dotenv
+
+=============================================================================
+"""
+
+import os
+from pathlib import Path
+
+# Estas librerías hay que instalarlas: pip install pyyaml python-dotenv
+import yaml
+from dotenv import load_dotenv
+
+
+# =============================================================================
+# RUTA BASE DEL PROYECTO
+# =============================================================================
+
+BASE_DIR = Path(__file__).resolve().parent
+
+
+# =============================================================================
+# CARGAR ARCHIVOS DE CONFIGURACIÓN
+# =============================================================================
+
+def cargar_env():
+    """
+    Carga las variables del archivo .env
+    
+    El archivo .env contiene variables de entorno locales que:
+    - No se suben a Git (secretos, contraseñas)
+    - Pueden variar entre desarrollo y producción
+    """
+    env_path = BASE_DIR / ".env"
+    if env_path.exists():
+        load_dotenv(env_path)
+
+
+def cargar_yaml():
+    """
+    Carga la configuración del archivo config.yml
+    
+    El archivo YAML contiene configuración que:
+    - Es legible por humanos (no programadores)
+    - Se puede modificar sin tocar código Python
+    - Se versiona en Git (no contiene secretos)
+    
+    Returns:
+        Diccionario con la configuración, o {} si no existe.
+    """
+    yaml_path = BASE_DIR / "config.yml"
+    
+    if yaml_path.exists():
+        with open(yaml_path, 'r', encoding='utf-8') as archivo:
+            return yaml.safe_load(archivo)
+    return {}
+
+
+def obtener_yaml(seccion, clave, default=None):
+    """
+    Obtiene un valor del YAML de forma segura.
+    
+    Args:
+        seccion: Nombre de la sección (ej: 'app', 'csv')
+        clave: Nombre de la clave dentro de la sección
+        default: Valor por defecto si no existe
+    
+    Returns:
+        El valor encontrado o el default.
+    
+    Ejemplo:
+        obtener_yaml('csv', 'delimiter', ',')  # Devuelve ',' si no existe
+    """
+    if seccion in _yaml_config:
+        seccion_data = _yaml_config[seccion]
+        if isinstance(seccion_data, dict) and clave in seccion_data:
+            return seccion_data[clave]
+    return default
+
+
+# =============================================================================
+# INICIALIZACIÓN
+# =============================================================================
+
+# Cargar configuración al importar el módulo
+cargar_env()
+_yaml_config = cargar_yaml()
+
+
+# =============================================================================
+# CONSTANTES DE CONFIGURACIÓN
+# =============================================================================
+# 
+# Prioridad: .env > config.yml > valor por defecto
+#
+# os.getenv('VARIABLE') busca primero en .env
+# Si no existe, usa obtener_yaml() que busca en config.yml
+# Si tampoco existe, usa el valor por defecto
+#
+# =============================================================================
+
+# --- Información de la aplicación ---
+APP_NAME = os.getenv(
+    'APP_NAME',                                    # Primero busca en .env
+    obtener_yaml('app', 'name', 'BikeParking')     # Si no, en YAML, si no, default
+)
+
+APP_VERSION = os.getenv(
+    'APP_VERSION',
+    obtener_yaml('app', 'version', '1.0.0')
+)
+
+# --- Entorno de ejecución ---
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+DEBUG = os.getenv('DEBUG', 'true').lower() == 'true'
+
+# --- Rutas del proyecto ---
+SOURCE_FOLDER = obtener_yaml('paths', 'source', 'src')
+DATA_FOLDER = os.getenv('DATA_FOLDER', obtener_yaml('data', 'folder', 'data'))
+TESTS_FOLDER = obtener_yaml('paths', 'tests', 'tests')
+DOCS_FOLDER = obtener_yaml('paths', 'docs', 'docs')
+
+# --- Archivos CSV ---
+USUARIOS_FILE = obtener_yaml('data', 'usuarios_file', 'usuarios.csv')
+BICIS_FILE = obtener_yaml('data', 'bicis_file', 'bicis.csv')
+REGISTROS_FILE = obtener_yaml('data', 'registros_file', 'registros.csv')
+
+# --- Configuración CSV ---
+CSV_DELIMITER = os.getenv(
+    'CSV_DELIMITER',
+    obtener_yaml('csv', 'delimiter', ',')
+)
+
+CSV_ENCODING = os.getenv(
+    'CSV_ENCODING',
+    obtener_yaml('csv', 'encoding', 'utf-8')
+)
+
+# --- Cabeceras CSV ---
+HEADERS_USUARIOS = obtener_yaml(
+    'csv_headers', 'usuarios',
+    ['dni', 'nombre', 'email']
+)
+
+HEADERS_BICIS = obtener_yaml(
+    'csv_headers', 'bicis',
+    ['serie_cuadro', 'dni_usuario', 'marca', 'modelo']
+)
+
+HEADERS_REGISTROS = obtener_yaml(
+    'csv_headers', 'registros',
+    ['timestamp', 'accion', 'serie_cuadro', 'dni_usuario']
+)
+
+# --- Validaciones ---
+DNI_LENGTH = obtener_yaml('validations', 'dni_length', 9)
+
+
+# =============================================================================
+# EJEMPLO DE USO
+# =============================================================================
+#
+# from config import APP_NAME, DATA_FOLDER, CSV_DELIMITER
+#
+# print(APP_NAME)       # "BikeParking" (de YAML o default)
+# print(DATA_FOLDER)    # "data" (de .env, YAML, o default)
+# print(CSV_DELIMITER)  # "," (de .env, YAML, o default)
+#
+# =============================================================================
+
+
+if __name__ == "__main__":
+    # Test: mostrar configuración cargada
+    print("=" * 60)
+    print("CONFIGURACIÓN CARGADA")
+    print("=" * 60)
+    print(f"APP_NAME:       {APP_NAME}")
+    print(f"APP_VERSION:    {APP_VERSION}")
+    print(f"ENVIRONMENT:    {ENVIRONMENT}")
+    print(f"DEBUG:          {DEBUG}")
+    print(f"DATA_FOLDER:    {DATA_FOLDER}")
+    print(f"CSV_DELIMITER:  '{CSV_DELIMITER}'")
+    print(f"CSV_ENCODING:   {CSV_ENCODING}")
+    print(f"HEADERS_USUARIOS: {HEADERS_USUARIOS}")
+    print("=" * 60)
