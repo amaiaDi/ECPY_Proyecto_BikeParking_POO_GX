@@ -184,31 +184,23 @@ Para aprender cómo funcionan estos archivos, el proyecto incluye **ejemplos edu
 
 Estos archivos **no se usan** en la aplicación, pero puedes estudiarlos para entender cómo funcionan en proyectos profesionales.
 
+## 📖 Documentación automática de la API
 
+La documentación técnica de las clases y funciones principales se genera automáticamente con **pydoc** y está disponible en:
 
+- `docs/api/` — Archivos HTML navegables para cada módulo y clase principal.
 
+Para consultarla:
+1. Abre cualquier archivo `.html` de esa carpeta con tu navegador web.
+2. Consulta el índice en `docs/api/README.md` para ver los módulos disponibles.
 
+> Si modificas el código fuente, puedes regenerar la documentación ejecutando:
+> 
+> ```bash
+> python -m pydoc -w src.modelo.bici src.modelo.usuario src.modelo.registro src.datos.csv_manager src.controlador.parking_controller src.controlador.usuarios_controller src.controlador.bicis_controller src.controlador.movimientos_controller src.utils.validaciones src.vista.menu
+> ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
 
 ## 🚀 Instalación
 
