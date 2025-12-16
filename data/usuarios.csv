@@ -1,2 +1,5 @@
-dni,nombre,apellidos,email,movil,password
-78886971F,Amaia,De La Cruz,amaia@prueba.com,666666666,1234
+dni,nombre,email
+12345678A,Ana López,ana@example.com
+87654321B,Carlos Pérez,carlos@example.com
+11223344C,Lucía Gómez,lucia@example.com
+33445555D,María Fernández,maria@example.com

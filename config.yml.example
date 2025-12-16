@@ -1,0 +1,81 @@
+# =============================================================================
+# config.yml.example - Ejemplo de archivo de configuración YAML
+# =============================================================================
+#
+# Este archivo es un EJEMPLO educativo. No se usa en la aplicación actual.
+# 
+# En proyectos profesionales, config.yml permite:
+# - Configuración sin modificar código Python
+# - Diferentes valores para desarrollo/producción
+# - Formato legible por humanos (no programadores)
+#
+# Para usarlo necesitarías:
+# 1. Renombrar a config.yml
+# 2. Instalar: pip install pyyaml
+# 3. Modificar config.py para cargar el YAML
+#
+# =============================================================================
+
+# Información de la aplicación
+app:
+  name: "BikeParking"
+  version: "1.0.0"
+
+# Rutas del proyecto
+paths:
+  source: "src"
+  data: "data"
+  tests: "tests"
+  docs: "docs"
+
+# Archivos de datos CSV
+data:
+  folder: "data"
+  usuarios_file: "usuarios.csv"
+  bicis_file: "bicis.csv"
+  registros_file: "registros.csv"
+
+# Configuración del formato CSV
+csv:
+  delimiter: ","          # Separador de columnas (coma o punto y coma)
+  encoding: "utf-8"       # Codificación de caracteres
+
+# Cabeceras de los archivos CSV
+csv_headers:
+  usuarios:
+    - dni
+    - nombre
+    - email
+  bicis:
+    - serie_cuadro
+    - dni_usuario
+    - marca
+    - modelo
+  registros:
+    - timestamp
+    - accion
+    - serie_cuadro
+    - dni_usuario
+
+# Validaciones
+validations:
+  dni_length: 9
+
+
+# =============================================================================
+# CÓMO SE USARÍA EN config.py (ejemplo educativo)
+# =============================================================================
+#
+# import yaml
+# 
+# def cargar_yaml():
+#     with open('config.yml', 'r', encoding='utf-8') as f:
+#         return yaml.safe_load(f)
+#
+# _config = cargar_yaml()
+#
+# APP_NAME = _config['app']['name']
+# DATA_FOLDER = _config['data']['folder']
+# CSV_DELIMITER = _config['csv']['delimiter']
+#
+# =============================================================================

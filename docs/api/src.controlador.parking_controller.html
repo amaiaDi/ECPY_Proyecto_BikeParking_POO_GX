@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module src.controlador.parking_controller</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title"><a href="src.html" class="white">src</a>.<a href="src.controlador.html" class="white">controlador</a>.parking_controller</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Crepositorios%5Cdalp_2526%5Cecpy_proyecto_bikeparking_oo_gx%5Csrc%5Ccontrolador%5Cparking_controller.py">c:\repositorios\dalp_2526\ecpy_proyecto_bikeparking_oo_gx\src\controlador\parking_controller.py</a></td></tr></table>
+    <p><span class="code">parking_controller.py&nbsp;-&nbsp;Controlador&nbsp;principal&nbsp;del&nbsp;sistema.<br>
+&nbsp;<br>
+Clase&nbsp;que&nbsp;agrupa&nbsp;todas&nbsp;las&nbsp;operaciones&nbsp;del&nbsp;parking.<br>
+Internamente&nbsp;delega&nbsp;a&nbsp;los&nbsp;módulos&nbsp;especializados.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="src.controlador.bicis_controller.html">src.controlador.bicis_controller</a><br>
+</td><td class="multicolumn"><a href="src.controlador.movimientos_controller.html">src.controlador.movimientos_controller</a><br>
+</td><td class="multicolumn"><a href="src.controlador.usuarios_controller.html">src.controlador.usuarios_controller</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="src.controlador.parking_controller.html#ParkingController">ParkingController</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="ParkingController">class <strong>ParkingController</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code">Controlador&nbsp;principal&nbsp;del&nbsp;sistema&nbsp;de&nbsp;parking&nbsp;de&nbsp;bicicletas.<br>
+&nbsp;<br>
+Agrupa&nbsp;todas&nbsp;las&nbsp;operaciones&nbsp;en&nbsp;una&nbsp;única&nbsp;clase&nbsp;para&nbsp;facilitar&nbsp;su&nbsp;uso.<br>
+Internamente&nbsp;delega&nbsp;en&nbsp;módulos&nbsp;especializados.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="ParkingController-__init__"><strong>__init__</strong></a>(self)</dt><dd><span class="code">Inicializa&nbsp;el&nbsp;controlador.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-obtener_bicis"><strong>obtener_bicis</strong></a>(self)</dt><dd><span class="code">Obtiene&nbsp;la&nbsp;lista&nbsp;de&nbsp;bicicletas.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-obtener_bicis_en_parking"><strong>obtener_bicis_en_parking</strong></a>(self)</dt><dd><span class="code">Obtiene&nbsp;las&nbsp;bicis&nbsp;que&nbsp;están&nbsp;en&nbsp;el&nbsp;parking.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-obtener_registros"><strong>obtener_registros</strong></a>(self)</dt><dd><span class="code">Obtiene&nbsp;la&nbsp;lista&nbsp;de&nbsp;registros.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-obtener_usuarios"><strong>obtener_usuarios</strong></a>(self)</dt><dd><span class="code">Obtiene&nbsp;la&nbsp;lista&nbsp;de&nbsp;usuarios.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-registrar_bici"><strong>registrar_bici</strong></a>(self, serie_cuadro, dni_usuario, marca, modelo)</dt><dd><span class="code">Registra&nbsp;una&nbsp;nueva&nbsp;bicicleta.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-registrar_entrada"><strong>registrar_entrada</strong></a>(self, serie_cuadro)</dt><dd><span class="code">Registra&nbsp;la&nbsp;entrada&nbsp;de&nbsp;una&nbsp;bicicleta.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-registrar_salida"><strong>registrar_salida</strong></a>(self, serie_cuadro)</dt><dd><span class="code">Registra&nbsp;la&nbsp;salida&nbsp;de&nbsp;una&nbsp;bicicleta.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-registrar_usuario"><strong>registrar_usuario</strong></a>(self, dni, nombre, email)</dt><dd><span class="code">Registra&nbsp;un&nbsp;nuevo&nbsp;usuario.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-validar_dni"><strong>validar_dni</strong></a>(self, dni)</dt><dd><span class="code">Valida&nbsp;el&nbsp;formato&nbsp;y&nbsp;letra&nbsp;del&nbsp;DNI.</span></dd></dl>
+
+<dl><dt><a name="ParkingController-validar_email"><strong>validar_email</strong></a>(self, email)</dt><dd><span class="code">Valida&nbsp;el&nbsp;formato&nbsp;del&nbsp;email.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

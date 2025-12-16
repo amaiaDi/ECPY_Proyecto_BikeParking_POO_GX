@@ -10,35 +10,35 @@ class Registro:
     Representa un registro de movimiento (entrada/salida) del parking.
     
     Atributos:
-        id: Identificador único del registro.
-        id_bici: ID de la bicicleta.
-        tipo: Tipo de movimiento ('entrada' o 'salida').
-        fecha_hora: Fecha y hora del movimiento.
+        timestamp: Fecha y hora del movimiento.
+        accion: Tipo de movimiento ('IN' o 'OUT').
+        serie_cuadro: Serie del cuadro de la bicicleta.
+        dni_usuario: DNI del usuario.
     """
     
-    def __init__(self, id, id_bici, tipo, fecha_hora):
+    def __init__(self, timestamp, accion, serie_cuadro, dni_usuario):
         """
         Crea un nuevo registro de movimiento.
         
         Args:
-            id: Identificador único del registro.
-            id_bici: ID de la bicicleta.
-            tipo: 'entrada' o 'salida'.
-            fecha_hora: Fecha y hora del movimiento.
+            timestamp: Fecha y hora del movimiento.
+            accion: 'IN' (entrada) o 'OUT' (salida).
+            serie_cuadro: Serie del cuadro de la bicicleta.
+            dni_usuario: DNI del usuario.
         """
-        self.id = id
-        self.id_bici = id_bici
-        self.tipo = tipo
-        self.fecha_hora = fecha_hora
+        self.timestamp = timestamp
+        self.accion = accion
+        self.serie_cuadro = serie_cuadro
+        self.dni_usuario = dni_usuario
     
     def __str__(self):
         """Devuelve una representación legible del registro."""
-        return f"{self.tipo.upper()} - Bici {self.id_bici} ({self.fecha_hora})"
+        return f"{self.accion} - Bici {self.serie_cuadro} ({self.timestamp})"
     
     def es_entrada(self):
         """Devuelve True si es un registro de entrada."""
-        return self.tipo.lower() == 'entrada'
+        return self.accion.upper() == 'IN'
     
     def es_salida(self):
         """Devuelve True si es un registro de salida."""
-        return self.tipo.lower() == 'salida'
+        return self.accion.upper() == 'OUT'
